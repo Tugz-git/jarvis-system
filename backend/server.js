@@ -21,9 +21,14 @@ app.post('/api/auth/login', (req, res) => {
   res.json({ token });
 });
 
-// Protect all /api routes except login
+// Healthcheck endpoint (public) — must be before auth middleware
+app.get('/api/status', (req, res) => {
+  res.json({ status: 'ONLINE', version: '0.0.1', timestamp: new Date().toISOString() });
+});
+
+// Protect all /api routes except login and status
 app.use('/api', (req, res, next) => {
-  if (req.path === '/auth/login') return next();
+  if (req.path === '/auth/login' || req.path === '/status') return next();
   authMiddleware(req, res, next);
 });
 
@@ -42,10 +47,6 @@ app.use('/api/system', systemRoutes);
 app.use('/api/memory', memoryRoutes);
 app.use('/api/files', filesRoutes);
 app.use('/api/automation', automationRoutes);
-
-app.get('/api/status', (req, res) => {
-  res.json({ status: 'ONLINE', version: '0.0.1', timestamp: new Date().toISOString() });
-});
 
 // Catch-all → frontend
 app.get('*', (req, res) => {
@@ -86,3 +87,4 @@ const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
   console.log(`[JARVIS] Online — http://localhost:${PORT}`);
 });
+
