@@ -112,7 +112,10 @@ function setRing(id, pct, label) {
 
 // ── CHAT ──
 function setupChat() {
-  document.getElementById('send-btn').addEventListener('click', sendMessage);
+  document.getElementById('send-btn').addEventListener('click', (e) => {
+    e.preventDefault();
+    sendMessage();
+  });
   document.getElementById('chat-input').addEventListener('click', () => {
     if (currentMode === 'standby') setMode('talking');
   });
@@ -412,3 +415,4 @@ function logout() {
 }
 
 window.JARVIS = { setMode, sendMessage, getBibleVerse, triggerIntruderAlert, requestPermission, logout };
+
